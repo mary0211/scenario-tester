@@ -1,0 +1,19 @@
+{
+arguments:{
+	threads:300,
+	secnerio-term:5000,
+	loop:5
+},
+variables:{
+	mrs-was-host:"54.238.173.13:10481",
+	think-user-time:10
+},
+body:{
+scenes:
+	[
+		["Post", "mrs-was-host", "/common/service/agentregister", "rowemid=rid&packetid=pid&pctoken=token", 0],	
+		["Wait", "think-user-time"],
+		["SendPacket", "mfs-host", ""]
+	]
+}
+}
