@@ -1,4 +1,4 @@
-package com.expull.test.secnerio.functor;
+package com.expull.test.scenario.functor;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -8,7 +8,7 @@ import java.net.URLConnection;
 
 import net.sf.json.JSONArray;
 
-import com.expull.test.secnerio.Worker;
+import com.expull.test.scenario.Worker;
 
 public class Post extends Functor {
 	public Post(Worker worker, JSONArray scene) {

@@ -1,6 +1,6 @@
 {
 arguments:{
-	threads:300,
+	threads:3,
 	secnerio-term:5000,
 	loop:5
 },

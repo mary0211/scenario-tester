@@ -1,4 +1,4 @@
-package com.expull.test.secnerio;
+package com.expull.test.scenario;
 
 import java.io.BufferedReader;
 import java.io.File;

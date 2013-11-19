@@ -1,10 +1,10 @@
-package com.expull.test.secnerio;
+package com.expull.test.scenario;
 
 import java.lang.reflect.InvocationTargetException;
 
 import net.sf.json.JSONArray;
 
-import com.expull.test.secnerio.functor.Functor;
+import com.expull.test.scenario.functor.Functor;
 
 public 	class Worker extends Thread {
 	private final Projector projector;

@@ -1,8 +1,8 @@
-package com.expull.test.secnerio.functor;
+package com.expull.test.scenario.functor;
 
 import net.sf.json.JSONArray;
 
-import com.expull.test.secnerio.Worker;
+import com.expull.test.scenario.Worker;
 
 public class Wait extends Functor {
 
