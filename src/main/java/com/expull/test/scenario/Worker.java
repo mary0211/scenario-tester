@@ -1,6 +1,9 @@
 package com.expull.test.scenario;
 
 import java.lang.reflect.InvocationTargetException;
+import java.net.Socket;
+import java.util.HashMap;
+import java.util.Map;
 
 import net.sf.json.JSONArray;
 
@@ -8,6 +11,7 @@ import com.expull.test.scenario.functor.Functor;
 
 public 	class Worker extends Thread {
 	private final Projector projector;
+	private Map<String,Socket> channelMap=new HashMap<String, Socket>();
 	private static String functorPackage = Functor.class.getName().replace(".Functor","");
 
 	public Worker(Projector projector) {
@@ -53,4 +57,14 @@ public 	class Worker extends Thread {
 	public Projector getProjector() {
 		return projector;
 	}
+
+	public void putchannel(String chName, Socket channel) {
+		channelMap.put(chName,channel);
+	}
+	
+	public Socket getChannel(String chName) {
+		return channelMap.get(chName);
+		
+	}
+
 }
