@@ -11,10 +11,15 @@ variables:{
 body:{
 scenes:
 	[
-		["OpenChannel", "ch-mrs", "54.238.157.120:10401"],
-		["Post", "mrs-was-host", "/common/service/agentregister", "rowemid=rid&packetid=pid&pctoken=token", 0],	
-		["Wait", "think-user-time"],
-		["SendPacket", "mfs-host", ""]
+		["OpenChannel", "ch-mrs", "54.238.194.7:10401"],
+		["OpenChannel", "ch-mps", "54.238.214.31:10702"],
+		["SendToChannel", "ch-mrs", "CMN00001{\"packetid\":\"id\"}"],
+		["SendToChannel", "ch-mps", "DUMMY000{\"resultcode\":\"0\"}"],
+		["ReceiveFromChannel", "ch-mps", "resultcode:0"],
+		["ReceiveFromChannel", "ch-mrs", "resultcode:0"],
+		["CloseChannel", "ch-mps"],
+		["CloseChannel", "ch-mrs"],
+		
 	]
 }
 }

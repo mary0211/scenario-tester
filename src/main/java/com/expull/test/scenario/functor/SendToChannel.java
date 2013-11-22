@@ -22,11 +22,12 @@ public class SendToChannel extends Functor{
 		String chName=scene.getString(1);
 		String sendData=scene.getString(2);
 		channel=worker.getChannel(chName);
+		
 		try {
+			System.out.println("데이터보냄");
 			bw=new BufferedWriter(new OutputStreamWriter(channel.getOutputStream()));
 			bw.write(sendData);
 			bw.flush();
-			bw.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
