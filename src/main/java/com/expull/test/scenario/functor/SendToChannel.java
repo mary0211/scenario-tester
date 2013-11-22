@@ -26,6 +26,7 @@ public class SendToChannel extends Functor{
 			bw=new BufferedWriter(new OutputStreamWriter(channel.getOutputStream()));
 			bw.write(sendData);
 			bw.flush();
+			bw.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

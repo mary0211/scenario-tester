@@ -37,6 +37,7 @@ public class ReceiveFromChannel extends Functor{
 			
 			// 결과 산출 통계를 위해 worker로 결과를 보내 공유함;
 			worker.putOPresult(chName,result);
+			br.close();
 			
 		} catch (IOException e) {
 			e.printStackTrace();
