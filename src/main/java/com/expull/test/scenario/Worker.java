@@ -78,5 +78,9 @@ public 	class Worker extends Thread {
 		return channelResultMap.get(chName);
 		
 	}
+	
+	public void outchannel(String chName) {
+		channelMap.remove(chName);
+	}
 	// //
 }
