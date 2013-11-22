@@ -2,10 +2,7 @@ package com.expull.test.scenario.functor;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.net.Socket;
-import java.net.UnknownHostException;
 
 import net.sf.json.JSONArray;
 
@@ -28,7 +25,6 @@ public class OpenChannel extends Functor {
 		channel=connection(ipPort);
 		worker.putchannel(chName,channel);
 	}
-	
 	
 	public Socket connection(String[] ipPort){
 		String ip=ipPort[0];

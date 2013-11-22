@@ -12,6 +12,8 @@ import com.expull.test.scenario.functor.Functor;
 public 	class Worker extends Thread {
 	private final Projector projector;
 	private Map<String,Socket> channelMap=new HashMap<String, Socket>();
+	//결과 산출을 위한 채널 Receive 결과를 담기위한 변수
+	private Map<String,String> channelResultMap=new HashMap<String, String>();
 	private static String functorPackage = Functor.class.getName().replace(".Functor","");
 
 	public Worker(Projector projector) {
@@ -66,5 +68,15 @@ public 	class Worker extends Thread {
 		return channelMap.get(chName);
 		
 	}
-
+	
+	// 결과 산출을 위한 put,get 
+	public void putOPresult(String chName, String result) {
+		channelResultMap.put(chName, result);
+	}
+	
+	public String getOPresult(String chName) {
+		return channelResultMap.get(chName);
+		
+	}
+	// //
 }
