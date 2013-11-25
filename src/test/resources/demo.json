@@ -1,8 +1,8 @@
 {
 arguments:{
-	threads:3,
+	threads:1,
 	secnerio-term:5000,
-	loop:5
+	loop:2
 },
 variables:{
 	mrs-was-host:"54.238.173.13:10481",
@@ -14,10 +14,10 @@ scenes:
 		["OpenChannel", "ch-mrs", "54.238.194.7:10401"],
 		["OpenChannel", "ch-mps", "54.238.214.31:10702"],
 		["SendToChannel", "ch-mrs", "CMN00001{\"packetid\":\"id\"}"],
-		["SendToChannel", "ch-mps", "USR0010{\"resultcode\":\"0\"}"],
-		["Post", "54.238.157.120:10481", "/provision/requestmps", "{\"rowemid\":\"id\", \"servicecode\":\"code\", \"version\":\"1.0\"}", 0],
+		["SendToChannel", "ch-mps", "DUMMY000{\"packetid\":\"id\"}"],
+		["Post", "54.238.151.232:8081", "/provision/requestmrs", "packetid=id", 0],
 		["ReceiveFromChannel", "ch-mps", "resultcode:0"],
-		["Post", "54.238.157.120:10481", "/provision/requestmrs", "{\"rowemid\":\"id\", \"servicecode\":\"code\", \"version\":\"1.0\", \"packetid\":\"packetid\"}", 0],
+		["Post", "54.238.151.232:8081", "/provision/requestmps", "packetid=id", 0],
 		["ReceiveFromChannel", "ch-mrs", "resultcode:0"],
 		["CloseChannel", "ch-mps"],
 		["CloseChannel", "ch-mrs"],
