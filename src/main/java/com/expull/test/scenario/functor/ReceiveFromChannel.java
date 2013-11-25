@@ -30,8 +30,7 @@ public class ReceiveFromChannel extends Functor{
 			while((available = in.available()) == 0) {
 				try {
 					Thread.sleep(1);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
+				} catch (InterruptedException e) {					e.printStackTrace();
 				}
 			}
 			byte arr[]=new byte[available];

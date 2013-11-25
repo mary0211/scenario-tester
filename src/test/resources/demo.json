@@ -18,10 +18,9 @@ scenes:
 		["ReceiveFromChannel", "ch-mrs", "\"resultcode\":\"0\"", "1"],
 		["ReceiveFromChannel", "ch-mps", "\"resultcode\":\"0\"", "1"],
 		["Post", "54.238.151.232:8081", "/servicemd/service/reqdirectory", "packetid=1384948683535652000#servername/ml/1.0.ccbd8d8820edb643846ca4f21d964637237820cef01344c2d22a9fd3a00c3e2d02044409ebe972576fe4f01cc7a62bd9&upfolder=home&rowemid=1384948683535652000&servicetoken=0a51a0fca1ccf8cfdcf415a5119d9783034962365eddd09080ef3b92c6b9d918", 0],
+		["ReceiveFromChannel", "ch-mrs", "\"upfolder\":", "1"],
 		["Post", "54.238.194.7:10481", "/servicemd/service/resdirectory", "packetid=1384948683535652000#servername/ml/1.0.ccbd8d8820edb643846ca4f21d964637237820cef01344c2d22a9fd3a00c3e2d02044409ebe972576fe4f01cc7a62bd9&rowemid=1384948683535652000&upfolder=home&fileinfo=1&pctoken=5b6a482ed07acbf0073d711deb93a5a1b542e9cfdef05da99fdd124ae160b41719fde6ff81ea03b9e803a60da7e9bd32", 0],
-		["ReceiveFromChannel", "ch-mrs", "\"resultcode\":\"0\""],
-		["ReceiveFromChannel", "ch-mps", "\"resultcode\":\"0\""],
-		["Wait","100"],
+		["ReceiveFromChannel", "ch-mps", "\"", "1"],
 		["CloseChannel", "ch-mps"],
 		["CloseChannel", "ch-mrs"],
 		
