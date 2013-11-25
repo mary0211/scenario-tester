@@ -24,6 +24,7 @@ public 	class Worker extends Thread {
 	public void run() {
 		long startTime = System.currentTimeMillis();
 		for(int i=0;i<projector.getScenes().size();i++) {
+			long eachStart = System.currentTimeMillis();
 			JSONArray scene = projector.getScenes().getJSONArray(i);
 			try {
 				evaluateScene(scene);
@@ -42,6 +43,8 @@ public 	class Worker extends Thread {
 			} catch (InvocationTargetException e) {
 				e.printStackTrace();
 			}
+			long eachEnd = System.currentTimeMillis();
+			projector.reportWorkerPerformanceAtIndex(i, eachEnd - eachStart);
 		}
 		long endTime = System.currentTimeMillis();
 		projector.reportWorkerPerformance(endTime - startTime);

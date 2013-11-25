@@ -20,6 +20,7 @@ public class Projector {
 	int loop;
 	private int workers;
 	private final Vector<Long> performances = new Vector<Long>();
+	private final Vector<Vector<Long>> eachPerformances = new Vector<Vector<Long>>();
 	
 	public Projector(String path) throws FileNotFoundException, IOException {
 		content = JSONObject.fromObject(readContentFromFile(path));
@@ -48,16 +49,31 @@ public class Projector {
 	}
 
 	private void reportLoop(int i) {
+		double avg = average(performances);
+		String report = "loop : "+i+", avg : "+avg;
+		
+		for(Vector<Long> e : eachPerformances) {
+			double a = average(e);
+			report += ", "+a;
+		}
+		
+		log(report);
+	}
+
+	private double average(Vector<Long> v) {
 		long t=0;
-		for(long p : performances) {
+		for(long p : v) {
 			t += p;
 		}
-		double avg = ((double)t) / ((double)performances.size());
-		log("loop : "+i+", avg : "+avg);
+		return ((double)t) / ((double)v.size());
 	}
 
 	private void initLoop(int i) {
 		performances.clear();
+		for(Vector<Long> e : eachPerformances) {
+			e.clear();
+		}
+		eachPerformances.clear();
 	}
 
 	private void log(String string) {
@@ -122,5 +138,12 @@ public class Projector {
 		if(arguments.containsKey(string)) return arguments.getString(string);
 		if(variables.containsKey(string)) return variables.getString(string);
 		return string;
+	}
+
+	public void reportWorkerPerformanceAtIndex(int i, long l) {
+		if(eachPerformances.size() >= i) {
+			eachPerformances.add(new Vector<Long>());
+		}
+		eachPerformances.get(i).add(l);
 	}
 }
