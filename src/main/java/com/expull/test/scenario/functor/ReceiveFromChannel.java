@@ -19,35 +19,34 @@ public class ReceiveFromChannel extends Functor{
 	}
 	
 	public void run() {
-		System.out.println("리시브대기");
-		
 		String chName=value(scene.getString(1));
-		String sucessCode=(value(scene.getString(2)).split(":"))[1];
+		String checker=value(scene.getString(2));
+		boolean printResponse = scene.size() > 3 && "1".equals(value(scene.getString(3)));
 		channel=worker.getChannel(chName);
+		String result = "";
 		try {
-//			br=new BufferedReader(new InputStreamReader(channel.getInputStream()));
-			byte arr[]=new byte[100];
 			in=channel.getInputStream();
-			in.read(arr);
-			System.out.println();
-			JSONObject receiveData=JSONObject.fromObject(new String(arr));
-			
-			//임시확인
-			System.out.println(chName+"    result"+receiveData.toString()); 
-
-			String resultcode=receiveData.getString("resultcode");
-			System.out.println("resulcode"+resultcode);
-			String result="";
-			
-			if(sucessCode.equals(resultcode)){
-				result="sucess";
-				System.out.println(chName+ " : Sucess");
+			int available = 0;
+			while((available = in.available()) == 0) {
+				try {
+					Thread.sleep(1);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
 				}
+			}
+			byte arr[]=new byte[available];
+			in.read(arr);
+			String content = new String(arr);
+			
+			if(content.contains(checker)){
+				result="sucess";
+			}
 			else{
 				result="failed";
-				System.out.println(chName+" : Failed");
-				}
+			}
 			
+			if(printResponse)
+				System.out.println(scene.toString() + " => "+ content + " => "+result);
 			// 결과 산출 통계를 위해 worker로 결과를 보내 공유함;
 			worker.putOPresult(chName,result);
 			

@@ -24,7 +24,7 @@ public class Post extends Functor {
 		
 		try {
 			String result = request(host, path, content);
-			System.out.println("POST result="+result);
+			System.out.println("POST path="+path+"   result"+result);
 			if("true".equals(printable)) System.out.println(result);
 		} catch (Exception e) {
 			e.printStackTrace();

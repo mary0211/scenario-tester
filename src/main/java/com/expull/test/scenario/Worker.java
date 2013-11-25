@@ -22,7 +22,6 @@ public 	class Worker extends Thread {
 	
 	@Override
 	public void run() {
-		projector.increaseWorker();
 		long startTime = System.currentTimeMillis();
 		for(int i=0;i<projector.getScenes().size();i++) {
 			JSONArray scene = projector.getScenes().getJSONArray(i);
@@ -82,5 +81,4 @@ public 	class Worker extends Thread {
 	public void outchannel(String chName) {
 		channelMap.remove(chName);
 	}
-	// //
 }

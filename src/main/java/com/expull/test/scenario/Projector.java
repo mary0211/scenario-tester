@@ -38,7 +38,8 @@ public class Projector {
 		for(int i=0;nextLoop();i++) {
 			initLoop(i);
 			int threads = getInt(arguments,"threads");
-			while(threads-- > 0) {
+			while(threads-- > 0) 
+				increaseWorker();{
 				new Worker(this).start();
 			}
 			waitForWorkers();
