@@ -20,7 +20,6 @@ public class CloseChannel extends Functor{
 		String chName=scene.getString(1);
 		channel=worker.getChannel(chName);
 		try {
-			System.out.println("채널닫음");
 			channel.close();
 			worker.outchannel(chName);
 		} catch (IOException e) {

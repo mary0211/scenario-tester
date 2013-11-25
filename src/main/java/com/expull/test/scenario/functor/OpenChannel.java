@@ -29,7 +29,6 @@ public class OpenChannel extends Functor {
 	public Socket connection(String[] ipPort){
 		String ip=ipPort[0];
 		int port=Integer.parseInt(ipPort[1]);
-		System.out.println("채널열기");
 		try {
 			channel=new Socket(ip,port);
 		} catch (Exception e) {

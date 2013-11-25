@@ -24,7 +24,6 @@ public class SendToChannel extends Functor{
 		channel=worker.getChannel(chName);
 		
 		try {
-			System.out.println("데이터보냄");
 			bw=new BufferedWriter(new OutputStreamWriter(channel.getOutputStream()));
 			bw.write(sendData);
 			bw.flush();
