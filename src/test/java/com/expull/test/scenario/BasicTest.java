@@ -6,12 +6,10 @@ import java.net.URL;
 
 import org.junit.Test;
 
-import com.expull.test.scenario.Projector;
-
 public class BasicTest {
 	@Test
 	public void test() throws FileNotFoundException, IOException {
 		URL resourceUrl = getClass().getResource("/demo.json");
-	//	new Projector(resourceUrl.getPath()).run();
+		new Projector(resourceUrl.getPath()).run();
 	}
 }

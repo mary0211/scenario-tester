@@ -1,48 +1,58 @@
 {
 arguments:{
-	threads:3,
+	threads:94,
 	secnerio-term:5000,
 	loop:5
 },
 variables:{
-	mrs-was-host:"54.238.173.13:10481",
+	mrs-was-host:"54.238.194.7:10481",
 	think-user-time:10,
 	rowemid-prefix:"test",
 	service-code:"md",
 	dcp-version:"1.0",
-	dcp-password:"asdf"
+	dcp-password:"asdf",
+	servername-mrs:"devmrs2",
+	servername-mps:"devmps2"
 },
 body:{
 prolog:[
+		["Post", "mrs-was-host", "/test/removedata",
+		"rowemid={{rowemid-prefix}}&count={{threads}}&servicecode={{service-code}}&version={{dcp-version}}&password={{dcp-password}}","0"]
+		,
 		["Post", "mrs-was-host", "/test/createdata",
-		"rowemid={{rowemid-prefix}}&count={{threads}}&serviceCode={{service-code}}&version={{dcp-version}}&password={{dcp-password}}"
+		"rowemid={{rowemid-prefix}}&count={{threads}}&servicecode={{service-code}}&version={{dcp-version}}&password={{dcp-password}}"
 		,"0"]
 	],
 scenes:
 	[
 		["ConcatVariable", "rowemid", "{{rowemid-prefix}}", "{{THREAD-ID}}"],
 		["ConcatVariable", "service-id", "{{rowemid}}", "#servername/", "{{service-code}}","/","{{dcp-version}}"],
-		["ConcatVariable", "pcid", "{{rowemid}}", "9999"],
+		["ConcatVariable", "pcid", "{{rowemid}}"],
 		["ConcatVariable", "packetid", "{{service-id}}", ".", "{{pcid}}"],
-		["ConcatVariable", "pctoken", "{{packetid}}"],
-		["ConcatVariable", "servicetoken", "{{service-code}}", "{{dcp-version}}"],
-		["ConcatVariable", "keepalivetoken", "{{packetid}}"],
+		["ConcatVariable", "pctoken", "{{rowemid}}"],
+		["ConcatVariable", "servicetoken", "{{rowemid}}"],
+		["ConcatVariable", "keepalivetoken", "{{rowemid}}"],
 		["OpenChannel", "ch-mrs", "54.238.194.7:10401"],
 		["OpenChannel", "ch-mps", "54.238.220.70:10702"],
 		["SendToChannel", "ch-mrs", "CMN00001{\"packetid\":\"{{packetid}}\"}"],
 		["SendToChannel", "ch-mps", "KAP00001{\"keepalivetoken\":\"{{keepalivetoken}}\"}"],
 		["ReceiveFromChannel", "ch-mrs", "\"resultcode\":\"0\"", "0"],
 		["ReceiveFromChannel", "ch-mps", "\"resultcode\":\"0\"", "0"],
-		["Post", "54.238.151.232:8081", "/servicemd/service/reqdirectory", "packetid={{packetid}}&upfolder=home&rowemid={{rowemid}}&servicetoken={{servicetoken}}", 0],
+		["Post", "mrs-was-host", "/test/bindingmrs", "packetid={{packetid}}&servername={{servername-mrs}}&cntl=I", "1"],		
+		["Post", "mrs-was-host", "/test/bindingmps", "serviceid={{service-id}}&servername={{servername-mps}}&cntl=I", "1"],		
+
+		["Post", "54.238.151.232:8081", "/servicemd/service/reqdirectory", "packetid={{packetid}}&upfolder=home&rowemid={{rowemid}}&servicetoken={{servicetoken}}", "0"],
 		["ReceiveFromChannel", "ch-mrs", "\"upfolder\":", "0"],
-		["Post", "54.238.194.7:10481", "/servicemd/service/resdirectory", "packetid={{packetid}}&rowemid={{rowemid}}&upfolder=home&fileinfo=1&pctoken={{pctoken}}", 0],
+		
+		["Post", "54.238.194.7:10481", "/servicemd/service/resdirectory", "packetid={{packetid}}&rowemid={{rowemid}}&upfolder=home&fileinfo=1&pctoken={{pctoken}}", "1"],
 		["ReceiveFromChannel", "ch-mps", "\"", "0"],
+		
 		["CloseChannel", "ch-mps"],
 		["CloseChannel", "ch-mrs"]
 	],
 epilogue:[
 		["Post", "mrs-was-host", "/test/removedata",
-		"rowemid={{rowemid-prefix}}&count={{threads}}&serviceCode={{service-code}}&version={{dcp-version}}&password={{dcp-password}}","0"]
+		"rowemid={{rowemid-prefix}}&count={{threads}}&servicecode={{service-code}}&version={{dcp-version}}&password={{dcp-password}}","0"]
 		]
 }
 }
