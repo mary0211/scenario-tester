@@ -1,26 +1,32 @@
 {
 arguments:{
-	threads:1,
+	threads:3,
 	secnerio-term:5000,
-	loop:100
+	loop:5
 },
 variables:{
 	mrs-was-host:"54.238.173.13:10481",
 	think-user-time:10,
-	rowemid-prefix:test
+	rowemid-prefix:"test",
+	service-code:"md",
+	dcp-version:"1.0",
+	dcp-password:"asdf"
 },
 body:{
 prolog:[
-		["Post", "54.238.194.7:10481", "/servicemd/service/createdata",
-		"rowemid={{rowemid-prefix}}&count={{threads}}"
+		["Post", "mrs-was-host", "/test/createdata",
+		"rowemid={{rowemid-prefix}}&count={{threads}}&serviceCode={{service-code}}&version={{dcp-version}}&password={{dcp-password}}"
+		,"0"]
 	],
 scenes:
 	[
 		["ConcatVariable", "rowemid", "{{rowemid-prefix}}", "{{THREAD-ID}}"],
-		["ConcatVariable", "packetid", "{{rowemid}}", "##serviceid"],
-		["ConcatVariable", "keepalivetoken", "{{rowemid}}"],
-		["ConcatVariable", "servicetoken", "{{rowemid}}"],
-		["ConcatVariable", "pctoken", "{{rowemid}}"],
+		["ConcatVariable", "service-id", "{{rowemid}}", "#servername/", "{{service-code}}","/","{{dcp-version}}"],
+		["ConcatVariable", "pcid", "{{rowemid}}", "9999"],
+		["ConcatVariable", "packetid", "{{service-id}}", ".", "{{pcid}}"],
+		["ConcatVariable", "pctoken", "{{packetid}}"],
+		["ConcatVariable", "servicetoken", "{{service-code}}", "{{dcp-version}}"],
+		["ConcatVariable", "keepalivetoken", "{{packetid}}"],
 		["OpenChannel", "ch-mrs", "54.238.194.7:10401"],
 		["OpenChannel", "ch-mps", "54.238.220.70:10702"],
 		["SendToChannel", "ch-mrs", "CMN00001{\"packetid\":\"{{packetid}}\"}"],
@@ -35,8 +41,8 @@ scenes:
 		["CloseChannel", "ch-mrs"]
 	],
 epilogue:[
-		["Post", "54.238.194.7:10481", "/servicemd/service/removedata",
-		"rowemid=test&count={{threads}}"
-	]
+		["Post", "mrs-was-host", "/test/removedata",
+		"rowemid={{rowemid-prefix}}&count={{threads}}&serviceCode={{service-code}}&version={{dcp-version}}&password={{dcp-password}}","0"]
+		]
 }
 }

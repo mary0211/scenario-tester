@@ -22,7 +22,7 @@ public class Projector {
 	private final Vector<Long> performances = new Vector<Long>();
 	private final Vector<Vector<Long>> eachPerformances = new Vector<Vector<Long>>();
 	private final JSONArray prolog;
-	private final JSONArray epilog;
+	private final JSONArray epilogue;
 	
 	public Projector(String path) throws FileNotFoundException, IOException {
 		content = JSONObject.fromObject(readContentFromFile(path));
@@ -31,7 +31,7 @@ public class Projector {
 		body = content.getJSONObject("body");
 		scenes = body.getJSONArray("scenes");
 		prolog = body.getJSONArray("prolog");
-		epilog = body.getJSONArray("epilog");
+		epilogue = body.getJSONArray("epilogue");
 		loop = getInt(arguments, "loop");
 	}
 
@@ -51,15 +51,15 @@ public class Projector {
 			waitForWorkers();
 			reportLoop(i);
 		}
-		execEpilog();
+		execEpilogue();
 	}
 
-	private void execEpilog() {
-		new Worker(this, 0, prolog).evaluate(false);
+	private void execEpilogue() {
+		new Worker(this, 0, epilogue).evaluate(false);
 	}
 
 	private void execProlog() {
-		new Worker(this, 0, epilog).evaluate(false);
+		new Worker(this, 0, prolog).evaluate(false);
 	}
 
 	private void reportLoop(int i) {

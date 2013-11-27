@@ -19,8 +19,8 @@ public class SendToChannel extends Functor{
 	
 	@Override
 	public void run(){
-		String chName=scene.getString(1);
-		String sendData=scene.getString(2);
+		String chName=value(scene.getString(1));
+		String sendData=value(scene.getString(2));
 		channel=worker.getChannel(chName);
 		
 		try {

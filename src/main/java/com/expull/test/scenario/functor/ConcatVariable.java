@@ -15,7 +15,7 @@ public class ConcatVariable extends Functor {
 		String key = scene.getString(1);
 		String variable = "";
 		for(int i=2;i<scene.size();i++)
-			variable += scene.getString(i);
+			variable += value(scene.getString(i));
 		worker.getWorkerVariables().put(key, variable);
 	}
 }
