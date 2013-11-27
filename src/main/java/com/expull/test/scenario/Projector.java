@@ -21,6 +21,8 @@ public class Projector {
 	private int workers;
 	private final Vector<Long> performances = new Vector<Long>();
 	private final Vector<Vector<Long>> eachPerformances = new Vector<Vector<Long>>();
+	private final JSONArray prolog;
+	private final JSONArray epilog;
 	
 	public Projector(String path) throws FileNotFoundException, IOException {
 		content = JSONObject.fromObject(readContentFromFile(path));
@@ -28,6 +30,8 @@ public class Projector {
 		variables = content.getJSONObject("variables");
 		body = content.getJSONObject("body");
 		scenes = body.getJSONArray("scenes");
+		prolog = body.getJSONArray("prolog");
+		epilog = body.getJSONArray("epilog");
 		loop = getInt(arguments, "loop");
 	}
 
@@ -36,16 +40,26 @@ public class Projector {
 	}
 
 	public void run() {
+		execProlog();
 		for(int i=0;nextLoop();i++) {
 			initLoop(i);
 			int threads = getInt(arguments,"threads");
-			while(threads-- > 0) 
-				increaseWorker();{
-				new Worker(this).start();
+			for(int j=0;j<threads;j++) { 
+				increaseWorker();
+				new Worker(this, j, scenes).start();
 			}
 			waitForWorkers();
 			reportLoop(i);
 		}
+		execEpilog();
+	}
+
+	private void execEpilog() {
+		new Worker(this, 0, prolog).evaluate(false);
+	}
+
+	private void execProlog() {
+		new Worker(this, 0, epilog).evaluate(false);
 	}
 
 	private void reportLoop(int i) {
@@ -137,7 +151,17 @@ public class Projector {
 	public String value(String string) {
 		if(arguments.containsKey(string)) return arguments.getString(string);
 		if(variables.containsKey(string)) return variables.getString(string);
-		return string;
+
+		return replaceWithVariables(replaceWithVariables(string, arguments), variables);
+	}
+
+	public static String replaceWithVariables(String string, JSONObject variableObjects) {
+		String result = string;
+		for(Object k : variableObjects.keySet()) {
+			String key = "{{"+k+"}}";
+			result = result.replace(key, variableObjects.getString(k.toString()));
+		}
+		return result;
 	}
 
 	public void reportWorkerPerformanceAtIndex(int i, long l) {

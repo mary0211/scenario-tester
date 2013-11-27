@@ -6,23 +6,37 @@ arguments:{
 },
 variables:{
 	mrs-was-host:"54.238.173.13:10481",
-	think-user-time:10
+	think-user-time:10,
+	rowemid-prefix:test
 },
 body:{
+prolog:[
+		["Post", "54.238.194.7:10481", "/servicemd/service/createdata",
+		"rowemid={{rowemid-prefix}}&count={{threads}}"
+	],
 scenes:
 	[
+		["ConcatVariable", "rowemid", "{{rowemid-prefix}}", "{{THREAD-ID}}"],
+		["ConcatVariable", "packetid", "{{rowemid}}", "##serviceid"],
+		["ConcatVariable", "keepalivetoken", "{{rowemid}}"],
+		["ConcatVariable", "servicetoken", "{{rowemid}}"],
+		["ConcatVariable", "pctoken", "{{rowemid}}"],
 		["OpenChannel", "ch-mrs", "54.238.194.7:10401"],
 		["OpenChannel", "ch-mps", "54.238.220.70:10702"],
-		["SendToChannel", "ch-mrs", "CMN00001{\"packetid\":\"1384948683535652000#servername/ml/1.0.ccbd8d8820edb643846ca4f21d964637237820cef01344c2d22a9fd3a00c3e2d02044409ebe972576fe4f01cc7a62bd9\"}"],
-		["SendToChannel", "ch-mps", "KAP00001{\"keepalivetoken\":\"1384948683535652000\"}"],
+		["SendToChannel", "ch-mrs", "CMN00001{\"packetid\":\"{{packetid}}\"}"],
+		["SendToChannel", "ch-mps", "KAP00001{\"keepalivetoken\":\"{{keepalivetoken}}\"}"],
 		["ReceiveFromChannel", "ch-mrs", "\"resultcode\":\"0\"", "0"],
 		["ReceiveFromChannel", "ch-mps", "\"resultcode\":\"0\"", "0"],
-		["Post", "54.238.151.232:8081", "/servicemd/service/reqdirectory", "packetid=1384948683535652000#servername/ml/1.0.ccbd8d8820edb643846ca4f21d964637237820cef01344c2d22a9fd3a00c3e2d02044409ebe972576fe4f01cc7a62bd9&upfolder=home&rowemid=1384948683535652000&servicetoken=0a51a0fca1ccf8cfdcf415a5119d9783034962365eddd09080ef3b92c6b9d918", 0],
+		["Post", "54.238.151.232:8081", "/servicemd/service/reqdirectory", "packetid={{packetid}}&upfolder=home&rowemid={{rowemid}}&servicetoken={{servicetoken}}", 0],
 		["ReceiveFromChannel", "ch-mrs", "\"upfolder\":", "0"],
-		["Post", "54.238.194.7:10481", "/servicemd/service/resdirectory", "packetid=1384948683535652000#servername/ml/1.0.ccbd8d8820edb643846ca4f21d964637237820cef01344c2d22a9fd3a00c3e2d02044409ebe972576fe4f01cc7a62bd9&rowemid=1384948683535652000&upfolder=home&fileinfo=1&pctoken=5b6a482ed07acbf0073d711deb93a5a1b542e9cfdef05da99fdd124ae160b41719fde6ff81ea03b9e803a60da7e9bd32", 0],
+		["Post", "54.238.194.7:10481", "/servicemd/service/resdirectory", "packetid={{packetid}}&rowemid={{rowemid}}&upfolder=home&fileinfo=1&pctoken={{pctoken}}", 0],
 		["ReceiveFromChannel", "ch-mps", "\"", "0"],
 		["CloseChannel", "ch-mps"],
 		["CloseChannel", "ch-mrs"]
+	],
+epilogue:[
+		["Post", "54.238.194.7:10481", "/servicemd/service/removedata",
+		"rowemid=test&count={{threads}}"
 	]
 }
 }

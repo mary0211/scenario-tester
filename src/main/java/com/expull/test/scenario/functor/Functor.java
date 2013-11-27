@@ -15,7 +15,8 @@ public class Functor {
 	public void run() {}
 
 	protected String value(String string) {
-		return worker.getProjector().value(string);
+		String projectedValue = worker.getProjector().value(string);
+		return worker.value(projectedValue);
 	}
 
 }

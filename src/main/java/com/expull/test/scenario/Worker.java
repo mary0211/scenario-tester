@@ -11,21 +11,38 @@ import com.expull.test.scenario.functor.Functor;
 
 public 	class Worker extends Thread {
 	private final Projector projector;
-	private Map<String,Socket> channelMap=new HashMap<String, Socket>();
+	private final Map<String,Socket> channelMap=new HashMap<String, Socket>();
 	//결과 산출을 위한 채널 Receive 결과를 담기위한 변수
-	private Map<String,String> channelResultMap=new HashMap<String, String>();
+	private final Map<String,String> channelResultMap=new HashMap<String, String>();
 	private static String functorPackage = Functor.class.getName().replace(".Functor","");
-
-	public Worker(Projector projector) {
+	private final Map<String, String> workerVariables = new HashMap<String, String>();
+	private final int id;
+	private final JSONArray scenes;
+	
+	public Worker(Projector projector, int id, JSONArray scenes) {
 		this.projector = projector;
+		this.id = id;
+		this.scenes = scenes;
+		initWorkerVariables();
 	}
 	
+	private void initWorkerVariables() {
+		workerVariables.put("THREAD-ID", ""+id);
+	}
+
 	@Override
 	public void run() {
 		long startTime = System.currentTimeMillis();
-		for(int i=0;i<projector.getScenes().size();i++) {
+		evaluate(true);
+		long endTime = System.currentTimeMillis();
+		projector.reportWorkerPerformance(endTime - startTime);
+		projector.decreaseWorker();
+	}
+
+	public void evaluate(boolean report) {
+		for(int i=0;i<scenes.size();i++) {
 			long eachStart = System.currentTimeMillis();
-			JSONArray scene = projector.getScenes().getJSONArray(i);
+			JSONArray scene = scenes.getJSONArray(i);
 			try {
 				evaluateScene(scene);
 			} catch (ClassNotFoundException e) {
@@ -44,11 +61,8 @@ public 	class Worker extends Thread {
 				e.printStackTrace();
 			}
 			long eachEnd = System.currentTimeMillis();
-			projector.reportWorkerPerformanceAtIndex(i, eachEnd - eachStart);
+			if(report) projector.reportWorkerPerformanceAtIndex(i, eachEnd - eachStart);
 		}
-		long endTime = System.currentTimeMillis();
-		projector.reportWorkerPerformance(endTime - startTime);
-		projector.decreaseWorker();
 	}
 
 	private void evaluateScene(JSONArray scene) throws ClassNotFoundException, SecurityException, NoSuchMethodException, IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException {
@@ -83,5 +97,18 @@ public 	class Worker extends Thread {
 	
 	public void outchannel(String chName) {
 		channelMap.remove(chName);
+	}
+
+	public Map<String, String> getWorkerVariables() {
+		return workerVariables;
+	}
+	
+	public String value(String projectedValue) {
+		String result = projectedValue;
+		for(String k : workerVariables.keySet()) {
+			String key = "{{"+k+"}}";
+			result = result.replace(key, workerVariables.get(k));
+		}
+		return result;
 	}
 }
