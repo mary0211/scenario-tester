@@ -51,6 +51,7 @@ public class Projector {
 			waitForWorkers();
 			reportLoop(i);
 		}
+		System.out.println("실패 건수: "+new Worker(this, 0, epilogue).getFailecount());
 		execEpilogue();
 	}
 

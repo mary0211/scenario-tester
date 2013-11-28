@@ -18,6 +18,8 @@ public 	class Worker extends Thread {
 	private final Map<String, String> workerVariables = new HashMap<String, String>();
 	private final int id;
 	private final JSONArray scenes;
+	private final Map<String, Integer> failcount=new HashMap<String, Integer>();
+	private static int failed;
 	
 	public Worker(Projector projector, int id, JSONArray scenes) {
 		this.projector = projector;
@@ -104,6 +106,9 @@ public 	class Worker extends Thread {
 	}
 	
 	public String value(String projectedValue) {
+		if(workerVariables.containsKey(projectedValue))
+			return workerVariables.get(projectedValue);
+		
 		String result = projectedValue;
 		for(String k : workerVariables.keySet()) {
 			String key = "{{"+k+"}}";
@@ -111,4 +116,19 @@ public 	class Worker extends Thread {
 		}
 		return result;
 	}
+
+	public void putFailcount(String chName, int count) {
+		failed+=count;
+	}
+
+	public int getFailecount() {
+		return failed;
+		
+	}
+	
+	public void getcurrnetFunctor(String chName, int count){
+		System.out.println("///////"+chName+" 소켓  Time Out///////");
+		
+	}
+	
 }
