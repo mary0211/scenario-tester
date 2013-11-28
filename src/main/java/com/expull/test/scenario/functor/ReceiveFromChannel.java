@@ -14,6 +14,7 @@ public class ReceiveFromChannel extends Functor{
 	private BufferedReader br=null;
 	private Socket channel=null;
 	private InputStream in=null;
+	final long timeout=5*1000;
 	public ReceiveFromChannel(Worker worker, JSONArray scene) {
 		super(worker, scene);
 	}
@@ -27,8 +28,13 @@ public class ReceiveFromChannel extends Functor{
 		try {
 			in=channel.getInputStream();
 			int available = 0;
+			long start=System.currentTimeMillis();
 			while((available = in.available()) == 0) {
 				try {
+					if(System.currentTimeMillis()-start>timeout){
+						System.out.println("//////// Time out /////////");
+						return;
+					}
 					Thread.sleep(1);
 				} catch (InterruptedException e) {					e.printStackTrace();
 				}

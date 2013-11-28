@@ -1,8 +1,8 @@
 {
 arguments:{
-	threads:94,
+	threads:7,
 	secnerio-term:5000,
-	loop:5
+	loop:10
 },
 variables:{
 	mrs-was-host:"54.238.194.7:10481",
@@ -48,11 +48,12 @@ scenes:
 		["ReceiveFromChannel", "ch-mps", "\"", "0"],
 		
 		["CloseChannel", "ch-mps"],
-		["CloseChannel", "ch-mrs"]
+		["CloseChannel", "ch-mrs"],
 	],
 epilogue:[
 		["Post", "mrs-was-host", "/test/removedata",
-		"rowemid={{rowemid-prefix}}&count={{threads}}&servicecode={{service-code}}&version={{dcp-version}}&password={{dcp-password}}","0"]
-		]
+		"rowemid={{rowemid-prefix}}&count={{threads}}&servicecode={{service-code}}&version={{dcp-version}}&password={{dcp-password}}","0"],
+		["Wait","100000"]
+	],
 }
 }
