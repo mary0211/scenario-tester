@@ -51,7 +51,6 @@ public class Projector {
 			waitForWorkers();
 			reportLoop(i);
 		}
-		System.out.println("실패 건수: "+new Worker(this, 0, epilogue).getFailecount());
 		execEpilogue();
 	}
 
@@ -63,12 +62,17 @@ public class Projector {
 		new Worker(this, 0, prolog).evaluate(false);
 	}
 
+	private static double round(double org, int r) {
+		int rr = 10 ^ r;
+		return Math.round(org * rr) / (float)rr;
+	}
+	
 	private void reportLoop(int i) {
-		double avg = average(performances);
+		double avg = round(average(performances), 2);
 		String report = "loop : "+i+", avg : "+avg;
 		
 		for(Vector<Long> e : eachPerformances) {
-			double a = average(e);
+			double a = round(average(e), 2);
 			report += ", "+a;
 		}
 		
@@ -165,8 +169,8 @@ public class Projector {
 		return result;
 	}
 
-	public void reportWorkerPerformanceAtIndex(int i, long l) {
-		if(eachPerformances.size() >= i) {
+	public synchronized void reportWorkerPerformanceAtIndex(int i, long l) {
+		if(eachPerformances.size() <= i) {
 			eachPerformances.add(new Vector<Long>());
 		}
 		eachPerformances.get(i).add(l);
