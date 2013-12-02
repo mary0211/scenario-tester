@@ -36,20 +36,24 @@ public class Projector {
 	}
 
 	private int getInt(JSONObject arguments2, String string) {
+		if(!arguments2.containsKey(string)) return 0;
 		return Integer.parseInt(arguments2.getString(string));
 	}
 
 	public void run() {
 		execProlog();
+		int totalThreads = getInt(arguments,"threads");
+		int step = getInt(arguments, "thread-step") == 0 ? totalThreads : getInt(arguments,"thread-step");
+		int threads = step;
 		for(int i=0;nextLoop();i++) {
 			initLoop(i);
-			int threads = getInt(arguments,"threads");
 			for(int j=0;j<threads;j++) { 
 				increaseWorker();
 				new Worker(this, j, scenes).start();
 			}
 			waitForWorkers();
-			reportLoop(i);
+			reportLoop(i, threads);
+			threads = Math.min(threads + step, totalThreads);
 		}
 		execEpilogue();
 	}
@@ -67,9 +71,9 @@ public class Projector {
 		return Math.round(org * rr) / (float)rr;
 	}
 	
-	private void reportLoop(int i) {
+	private void reportLoop(int i, int threads) {
 		double avg = round(average(performances), 2);
-		String report = "loop : "+i+", avg : "+avg;
+		String report = "loop : "+i+", threads : "+threads+", avg : "+avg;
 		
 		for(Vector<Long> e : eachPerformances) {
 			double a = round(average(e), 2);

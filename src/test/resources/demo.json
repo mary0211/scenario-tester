@@ -1,13 +1,14 @@
 {
 arguments:{
-	threads:30,
+	threads:2000,	
+	thread-step:200,
 	secnerio-term:5000,
-	loop:3
+	loop:10,
 },
 variables:{
 	mrs-was-host:"54.238.194.7:10481",
 	think-user-time:10,
-	wait-a-term:500,
+	wait-a-term:80,
 	rowemid-prefix:"test",
 	service-code:"md",
 	dcp-version:"1.0",
@@ -35,7 +36,8 @@ scenes:
 		["ConcatVariable", "servicetoken", "{{rowemid}}"],
 		["ConcatVariable", "keepalivetoken", "{{rowemid}}"],
 		["CalculateVariable", "wait-a", "*", "{{THREAD-ID}}", "{{wait-a-term}}"],
-		["ConcatVariable", "wait-b", "500"],
+		["ConcatVariable", "wait-b", "100"],
+		["Wait", "wait-a"],
 		["OpenChannel", "ch-mrs", "54.238.194.7:10401"],
 		["OpenChannel", "ch-mps", "54.238.220.70:10702"],
 		["SendToChannel", "ch-mrs", "CMN00001{\"packetid\":\"{{packetid}}\"}"],
@@ -44,15 +46,11 @@ scenes:
 		["ReceiveFromChannel", "ch-mps", "\"resultcode\":\"0\"", "0"],
 		["Post", "mrs-was-host", "/test/bindingmrs", "packetid={{packetid}}&servername={{servername-mrs}}&cntl=I", "1"],		
 		["Post", "mrs-was-host", "/test/bindingmps", "serviceid={{service-id}}&servername={{servername-mps}}&cntl=I", "1"],		
-
-		["Skip", "Wait", "wait-a"],
 		["Post", "54.238.151.232:8081", "/servicemd/service/reqdirectory", "packetid={{packetid}}&upfolder=home&rowemid={{rowemid}}&servicetoken={{servicetoken}}", "0"],
 		["ReceiveFromChannel", "ch-mrs", "\"upfolder\":", "0"],
-		
-		["Skip", "Wait", "wait-b"],
+		["Wait", "wait-b"],
 		["Post", "54.238.194.7:10481", "/servicemd/service/resdirectory", "packetid={{packetid}}&rowemid={{rowemid}}&upfolder=home&fileinfo=1&pctoken={{pctoken}}", "1"],
 		["ReceiveFromChannel", "ch-mps", "\"", "0"],
-		
 		["CloseChannel", "ch-mps"],
 		["CloseChannel", "ch-mrs"],
 	],
