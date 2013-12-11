@@ -1,9 +1,11 @@
 package com.expull.test.scenario;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.Vector;
@@ -45,16 +47,36 @@ public class Projector {
 		int totalThreads = getInt(arguments,"threads");
 		int step = getInt(arguments, "thread-step") == 0 ? totalThreads : getInt(arguments,"thread-step");
 		int threads = step;
+		String titles="loop, threads, success, failed, avg";
+		
+		for(int i=0;i<scenes.size();i++){
+			JSONArray title=scenes.getJSONArray(i);
+			titles+=", "+title.getString(0);
+		}
+		
+//		String rs="";
+		try {
+			BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter("result.csv"));
+			bufferedWriter.write(titles);
+			bufferedWriter.newLine();
 		for(int i=0;nextLoop();i++) {
 			initLoop(i);
 			for(int j=0;j<threads;j++) { 
 				increaseWorker();
 				new Worker(this, j, scenes).start();
 			}
+			
 			waitForWorkers();
-			reportLoop(i, threads);
+			bufferedWriter.write(reportLoop(i, threads));;
 			threads = Math.min(threads + step, totalThreads);
+			
+			bufferedWriter.newLine();
+			}
+		bufferedWriter.close();
+		} catch (IOException e) {
 		}
+//		System.out.println("result : "+rs);
+//		resulrtFileOut(rs);
 		execEpilogue();
 	}
 
@@ -71,9 +93,10 @@ public class Projector {
 		return Math.round(org * rr) / (float)rr;
 	}
 	
-	private void reportLoop(int i, int threads) {
+	private String reportLoop(int i, int threads) {
 		double avg = round(average(performances), 2);
-		String report = "loop : "+i+", threads : "+threads+", avg : "+avg;
+//		String report = "loop : "+i+", threads : "+threads+", success : "+threads+", failed : 0"+", avg : "+avg;
+		String report =i+", "+threads+", "+threads+", 0"+", "+avg;
 		
 		for(Vector<Long> e : eachPerformances) {
 			double a = round(average(e), 2);
@@ -81,6 +104,8 @@ public class Projector {
 		}
 		
 		log(report);
+		
+		return report;
 	}
 
 	private double average(Vector<Long> v) {
@@ -179,4 +204,22 @@ public class Projector {
 		}
 		eachPerformances.get(i).add(l);
 	}
+/*	
+	public void resulrtFileOut(String rs) {
+		System.out.println("file writting....");
+		try {
+			BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter("result.csv"));
+			
+			bufferedWriter.write(rs);
+			
+			bufferedWriter.newLine();
+			bufferedWriter.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+			System.out.println("file error....");
+		}
+		
+	}
+*/
+	
 }
