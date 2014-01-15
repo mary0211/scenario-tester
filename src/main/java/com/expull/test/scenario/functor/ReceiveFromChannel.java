@@ -33,13 +33,14 @@ public class ReceiveFromChannel extends Functor{
 			while((available = in.available()) == 0) {
 				try {
 					if(System.currentTimeMillis()-start>timeout){
-						System.out.println("//////// Time out /////////");
+//						System.out.println("//////// Time out /////////");
 						worker.putFailcount(chName, 1);
 						worker.getcurrnetFunctor(chName,count);
 						return;
 					}
 					Thread.sleep(1);
-				} catch (InterruptedException e) {					e.printStackTrace();
+				} catch (InterruptedException e) {
+					e.printStackTrace();
 				}
 			}
 			count+=1;

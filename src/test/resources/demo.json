@@ -1,15 +1,15 @@
 {
 arguments:{
-	threads:2000,	
-	thread-step:200,
+	threads:1,	
+	thread-step:1,
 	secnerio-term:5000,
-	loop:10,
+	loop:1,
 },
 variables:{
 	mrs-was-host:"54.238.194.7:10481",
 	think-user-time:10,
-	wait-a-term:80,
-	rowemid-prefix:"test",
+	wait-a-term:200,
+	rowemid-prefix:"usr",
 	service-code:"md",
 	dcp-version:"1.0",
 	dcp-password:"asdf",

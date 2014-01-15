@@ -128,7 +128,7 @@ public 	class Worker extends Thread {
 	}
 	
 	public void getcurrnetFunctor(String chName, int count){
-		System.out.println("///////"+chName+" 소켓  Time Out///////");
+//		System.out.println("///////"+chName+" 소켓  Time Out///////");
 		
 	}
 	
