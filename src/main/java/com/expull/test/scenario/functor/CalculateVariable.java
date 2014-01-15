@@ -10,6 +10,7 @@ public class CalculateVariable extends Functor {
 		super(worker, scene);
 	}
 
+	@Override
 	public void run() {
 		String key = scene.getString(1);
 		String op = scene.getString(2);

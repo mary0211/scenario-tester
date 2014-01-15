@@ -18,6 +18,11 @@ public 	class Worker extends Thread {
 	private final Map<String, String> workerVariables = new HashMap<String, String>();
 	private final int id;
 	private final JSONArray scenes;
+	
+	public int getWorkerId() {
+		return id;
+	}
+
 	private final Map<String, Integer> failcount=new HashMap<String, Integer>();
 	private static int failed;
 	
@@ -43,35 +48,31 @@ public 	class Worker extends Thread {
 
 	public void evaluate(boolean report) {
 		for(int i=0;i<scenes.size();i++) {
+			getProjector().increaseTotalCount();
 			long eachStart = System.currentTimeMillis();
 			JSONArray scene = scenes.getJSONArray(i);
 			try {
 				evaluateScene(scene);
-			} catch (ClassNotFoundException e) {
-				e.printStackTrace();
-			} catch (SecurityException e) {
-				e.printStackTrace();
-			} catch (NoSuchMethodException e) {
-				e.printStackTrace();
-			} catch (IllegalArgumentException e) {
-				e.printStackTrace();
-			} catch (InstantiationException e) {
-				e.printStackTrace();
-			} catch (IllegalAccessException e) {
-				e.printStackTrace();
-			} catch (InvocationTargetException e) {
-				e.printStackTrace();
-			}
+				getProjector().increaseSuccessCount();
+			} catch (Throwable t) {
+				t.printStackTrace();
+				getProjector().increaseFailCount();
+			} 
 			long eachEnd = System.currentTimeMillis();
 			if(report) projector.reportWorkerPerformanceAtIndex(i, eachEnd - eachStart);
 		}
 	}
 
 	private void evaluateScene(JSONArray scene) throws ClassNotFoundException, SecurityException, NoSuchMethodException, IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException {
+		log("evaluateScene, "+scene);
 		String functorName = functorPackage + "." + scene.getString(0);
 		Class<?> cls = Class.forName(functorName);
 		Functor functor = (Functor)(cls.getConstructor(Worker.class, JSONArray.class).newInstance(this, scene));
 		functor.run();
+	}
+
+	private void log(String string) {
+		getProjector().log(string);
 	}
 
 	public Projector getProjector() {

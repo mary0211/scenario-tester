@@ -23,6 +23,9 @@ public class Projector {
 	private final Vector<Vector<Long>> eachPerformances = new Vector<Vector<Long>>();
 	private final JSONArray prolog;
 	private final JSONArray epilogue;
+	private int failCount = 0;
+	private int successCount = 0;
+	private int totalCount = 0;
 	
 	public Projector(String path) throws FileNotFoundException, IOException {
 		content = JSONObject.fromObject(readContentFromFile(path));
@@ -99,7 +102,7 @@ public class Projector {
 		eachPerformances.clear();
 	}
 
-	private void log(String string) {
+	public void log(String string) {
 		System.out.println(string);
 	}
 
@@ -179,4 +182,38 @@ public class Projector {
 		}
 		eachPerformances.get(i).add(l);
 	}
+
+	public synchronized void increaseValue(String key, int amount) {
+		if(!variables.containsKey(key)) {
+			variables.put(key, "0");
+		}
+		int v = Integer.parseInt(variables.getString(key));
+		variables.put(key, (v+amount)+"");
+	}
+
+	public synchronized void increaseTotalCount() {
+		totalCount++;
+	}
+
+	public synchronized void increaseSuccessCount() {
+		successCount++;
+	}
+
+	public synchronized void increaseFailCount() {
+		failCount++;
+	}
+	
+	
+	public int getSuccessCount() {
+		return successCount;
+	}
+
+	public int getTotalCount() {
+		return totalCount;
+	}
+
+	public int getFailCount() {
+		return failCount;
+	}
+
 }

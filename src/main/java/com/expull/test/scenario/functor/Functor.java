@@ -12,7 +12,7 @@ public class Functor {
 		this.worker = worker;
 		this.scene = scene;
 	}
-	public void run() {}
+	public void run() { }
 
 	protected String value(String string) {
 		String projectedValue = worker.getProjector().value(string);

@@ -14,7 +14,10 @@ variables:{
 	dcp-version:"1.0",
 	dcp-password:"asdf",
 	servername-mrs:"devmrs2",
-	servername-mps:"devmps2"
+	servername-mps:"devmps2",
+	loop-count:100,
+	transaction-count:0,
+	monitoring-term:5000
 },
 body:{
 prolog:[
@@ -23,11 +26,11 @@ prolog:[
 		,
 		["Post", "mrs-was-host", "/test/createdata",
 		"rowemid={{rowemid-prefix}}&count={{threads}}&servicecode={{service-code}}&version={{dcp-version}}&password={{dcp-password}}"
-		,"0"]
+		,"0"],
+		["Monitor", "monitoring-term", "{{transaction-count}}"]
 	],
 scenes:
 	[	
-		["Wait","think-user-time"],
 		["ConcatVariable", "rowemid", "{{rowemid-prefix}}", "{{THREAD-ID}}"],
 		["ConcatVariable", "service-id", "{{rowemid}}", "#servername/", "{{service-code}}","/","{{dcp-version}}"],
 		["ConcatVariable", "pcid", "{{rowemid}}"],
@@ -36,7 +39,6 @@ scenes:
 		["ConcatVariable", "servicetoken", "{{rowemid}}"],
 		["ConcatVariable", "keepalivetoken", "{{rowemid}}"],
 		["CalculateVariable", "wait-a", "*", "{{THREAD-ID}}", "{{wait-a-term}}"],
-		["ConcatVariable", "wait-b", "100"],
 		["Wait", "wait-a"],
 		["OpenChannel", "ch-mrs", "54.238.194.7:10401"],
 		["OpenChannel", "ch-mps", "54.238.220.70:10702"],
@@ -45,12 +47,14 @@ scenes:
 		["ReceiveFromChannel", "ch-mrs", "\"resultcode\":\"0\"", "0"],
 		["ReceiveFromChannel", "ch-mps", "\"resultcode\":\"0\"", "0"],
 		["Post", "mrs-was-host", "/test/bindingmrs", "packetid={{packetid}}&servername={{servername-mrs}}&cntl=I", "1"],		
-		["Post", "mrs-was-host", "/test/bindingmps", "serviceid={{service-id}}&servername={{servername-mps}}&cntl=I", "1"],		
-		["Post", "54.238.151.232:8081", "/servicemd/service/reqdirectory", "packetid={{packetid}}&upfolder=home&rowemid={{rowemid}}&servicetoken={{servicetoken}}", "0"],
-		["ReceiveFromChannel", "ch-mrs", "\"upfolder\":", "0"],
-		["Wait", "wait-b"],
-		["Post", "54.238.194.7:10481", "/servicemd/service/resdirectory", "packetid={{packetid}}&rowemid={{rowemid}}&upfolder=home&fileinfo=1&pctoken={{pctoken}}", "1"],
-		["ReceiveFromChannel", "ch-mps", "\"", "0"],
+		["Post", "mrs-was-host", "/test/bindingmps", "serviceid={{service-id}}&servername={{servername-mps}}&cntl=I", "1"],	
+		["Loop", "loop-count", [
+			["Post", "54.238.151.232:8081", "/servicemd/service/reqdirectory", "packetid={{packetid}}&upfolder=home&rowemid={{rowemid}}&servicetoken={{servicetoken}}", "0"],
+			["ReceiveFromChannel", "ch-mrs", "\"upfolder\":", "0"],
+			["Post", "54.238.194.7:10481", "/servicemd/service/resdirectory", "packetid={{packetid}}&rowemid={{rowemid}}&upfolder=home&fileinfo=1&pctoken={{pctoken}}", "1"],
+			["ReceiveFromChannel", "ch-mps", "\"", "0"],
+			["IncreaseGlobal", "transaction-count", "1"]
+		]],
 		["CloseChannel", "ch-mps"],
 		["CloseChannel", "ch-mrs"],
 	],
