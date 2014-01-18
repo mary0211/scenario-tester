@@ -1,6 +1,5 @@
 package com.expull.test.scenario.functor;
 
-import java.io.BufferedOutputStream;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -18,7 +17,7 @@ public class SendToChannel extends Functor{
 	}
 	
 	@Override
-	public void run(){
+	public String run(){
 		String chName=value(scene.getString(1));
 		String sendData=value(scene.getString(2));
 		channel=worker.getChannel(chName);
@@ -30,6 +29,7 @@ public class SendToChannel extends Functor{
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		return "";
 	}
 
 }

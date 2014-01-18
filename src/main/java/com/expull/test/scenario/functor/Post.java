@@ -16,19 +16,21 @@ public class Post extends Functor {
 	}
 
 	@Override
-	public void run() {
+	public String run() {
 		String host = value(scene.getString(1));
 		String path = value(scene.getString(2));
 		String content = value(scene.getString(3));
 		String printable = value(scene.getString(4));
 		
+		String result = "";
 		try {
-			String result = request(host, path, content);
+			result = request(host, path, content);
 			//System.out.println("POST path="+path+"   result"+result);
 			if("true".equals(printable)) System.out.println(result);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		return result;
 	}
 	
 	public static String request(String host, String path, String content) throws Exception {

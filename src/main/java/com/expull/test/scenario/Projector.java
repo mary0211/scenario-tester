@@ -207,7 +207,6 @@ public class Projector {
 		}
 		eachPerformances.get(i).add(l);
 	}
-<<<<<<< HEAD
 
 	public synchronized void increaseValue(String key, int amount) {
 		if(!variables.containsKey(key)) {
@@ -241,25 +240,4 @@ public class Projector {
 	public int getFailCount() {
 		return failCount;
 	}
-
-=======
-/*	
-	public void resulrtFileOut(String rs) {
-		System.out.println("file writting....");
-		try {
-			BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter("result.csv"));
-			
-			bufferedWriter.write(rs);
-			
-			bufferedWriter.newLine();
-			bufferedWriter.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-			System.out.println("file error....");
-		}
-		
-	}
-*/
-	
->>>>>>> c18e6f3c8b18253d7468ca8923c361aba65aa080
 }

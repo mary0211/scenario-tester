@@ -11,11 +11,13 @@ public class ConcatVariable extends Functor {
 	}
 
 	@Override
-	public void run() {
+	public String run() {
 		String key = scene.getString(1);
 		String variable = "";
 		for(int i=2;i<scene.size();i++)
 			variable += value(scene.getString(i));
-		worker.getWorkerVariables().put(key, variable);
+		if(key.length() > 0)
+			worker.getWorkerVariables().put(key, variable);
+		return variable;
 	}
 }

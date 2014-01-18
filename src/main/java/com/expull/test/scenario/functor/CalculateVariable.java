@@ -11,7 +11,7 @@ public class CalculateVariable extends Functor {
 	}
 
 	@Override
-	public void run() {
+	public String run() {
 		String key = scene.getString(1);
 		String op = scene.getString(2);
 		
@@ -23,7 +23,9 @@ public class CalculateVariable extends Functor {
 			variable = add(scene);
 		}
 
-		worker.getWorkerVariables().put(key, variable+"");	
+		String v = variable + "";
+		worker.getWorkerVariables().put(key, v);
+		return v;
 	}
 
 	private long add(JSONArray scene) {

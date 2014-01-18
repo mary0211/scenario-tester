@@ -6,12 +6,11 @@ import java.io.InputStream;
 import java.net.Socket;
 
 import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
 
 import com.expull.test.scenario.Worker;
 
 public class ReceiveFromChannel extends Functor{
-	private BufferedReader br=null;
+	private final BufferedReader br=null;
 	private Socket channel=null;
 	private InputStream in=null;
 	final long timeout=15*1000;
@@ -20,7 +19,8 @@ public class ReceiveFromChannel extends Functor{
 		super(worker, scene);
 	}
 	
-	public void run() {
+	@Override
+	public String run() {
 		String chName=value(scene.getString(1));
 		String checker=value(scene.getString(2));
 		boolean printResponse = scene.size() > 3 && "1".equals(value(scene.getString(3)));
@@ -33,10 +33,9 @@ public class ReceiveFromChannel extends Functor{
 			while((available = in.available()) == 0) {
 				try {
 					if(System.currentTimeMillis()-start>timeout){
-//						System.out.println("//////// Time out /////////");
 						worker.putFailcount(chName, 1);
 						worker.getcurrnetFunctor(chName,count);
-						return;
+						return "time-out";
 					}
 					Thread.sleep(1);
 				} catch (InterruptedException e) {
@@ -63,6 +62,7 @@ public class ReceiveFromChannel extends Functor{
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		return result;
 	}
 	
 }

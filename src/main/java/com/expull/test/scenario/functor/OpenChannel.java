@@ -19,11 +19,12 @@ public class OpenChannel extends Functor {
 	}
 	
 	@Override
-	public void run(){
+	public String run(){
 		String chName=value(scene.getString(1));
 		String ipPort[]=value(scene.getString(2)).split(":");
 		channel=connection(ipPort);
 		worker.putchannel(chName,channel);
+		return chName;
 	}
 	
 	public Socket connection(String[] ipPort){
