@@ -63,12 +63,13 @@ public 	class Worker extends Thread {
 		}
 	}
 
-	private void evaluateScene(JSONArray scene) throws ClassNotFoundException, SecurityException, NoSuchMethodException, IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException {
-		log("evaluateScene, "+scene);
+	public String evaluateScene(JSONArray scene) throws ClassNotFoundException, SecurityException, NoSuchMethodException, IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException {
 		String functorName = functorPackage + "." + scene.getString(0);
+		
 		Class<?> cls = Class.forName(functorName);
 		Functor functor = (Functor)(cls.getConstructor(Worker.class, JSONArray.class).newInstance(this, scene));
-		functor.run();
+		String result = functor.run();
+		return result;
 	}
 
 	private void log(String string) {

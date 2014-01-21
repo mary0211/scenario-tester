@@ -18,8 +18,8 @@ public class SendToChannel extends Functor{
 	
 	@Override
 	public String run(){
-		String chName=value(scene.getString(1));
-		String sendData=value(scene.getString(2));
+		String chName=evaluatedValue(scene.get(1));
+		String sendData=evaluatedValue(scene.get(2));
 		channel=worker.getChannel(chName);
 		
 		try {
@@ -29,7 +29,7 @@ public class SendToChannel extends Functor{
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		return "";
+		return sendData;
 	}
 
 }

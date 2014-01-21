@@ -21,9 +21,9 @@ public class ReceiveFromChannel extends Functor{
 	
 	@Override
 	public String run() {
-		String chName=value(scene.getString(1));
-		String checker=value(scene.getString(2));
-		boolean printResponse = scene.size() > 3 && "1".equals(value(scene.getString(3)));
+		String chName=evaluatedValue(scene.get(1));
+		String checker=evaluatedValue(scene.get(2));
+		boolean printResponse = scene.size() > 3 && "1".equals(evaluatedValue(scene.get(3)));
 		channel=worker.getChannel(chName);
 		String result = "";
 		try {

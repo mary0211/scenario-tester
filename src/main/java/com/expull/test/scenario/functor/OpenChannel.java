@@ -20,8 +20,8 @@ public class OpenChannel extends Functor {
 	
 	@Override
 	public String run(){
-		String chName=value(scene.getString(1));
-		String ipPort[]=value(scene.getString(2)).split(":");
+		String chName=evaluatedValue(scene.get(1));
+		String ipPort[]=evaluatedValue(scene.get(2)).split(":");
 		channel=connection(ipPort);
 		worker.putchannel(chName,channel);
 		return chName;

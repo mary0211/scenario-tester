@@ -16,8 +16,7 @@ public class CloseChannel extends Functor{
 	
 	@Override
 	public String run() {
-		
-		String chName=value(scene.getString(1));
+		String chName=evaluatedValue(scene.get(1));
 		channel=worker.getChannel(chName);
 		try {
 			channel.close();

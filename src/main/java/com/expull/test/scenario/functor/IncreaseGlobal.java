@@ -13,7 +13,7 @@ public class IncreaseGlobal extends Functor {
 	@Override
 	public String run() {
 		String key = scene.getString(1);
-		int amount = Integer.parseInt(scene.getString(2));
+		int amount = Integer.parseInt(evaluatedValue(scene.get(2)));
 
 		worker.getProjector().increaseValue(key, amount);
 		return worker.getProjector().value(key);

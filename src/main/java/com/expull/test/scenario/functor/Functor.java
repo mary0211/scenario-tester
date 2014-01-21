@@ -14,9 +14,18 @@ public class Functor {
 	}
 	public String run() { return ""; }
 
-	protected String value(String string) {
-		String projectedValue = worker.getProjector().value(string);
+	protected String evaluatedValue(Object obj) {
+		if(obj instanceof JSONArray) {
+			try {
+				return worker.evaluateScene((JSONArray)obj);
+			} catch (Throwable e) {
+				return "";
+			}
+		}
+		String projectedValue = worker.getProjector().value(obj.toString());
 		return worker.value(projectedValue);
 	}
+	
+	public void stopThreading() {}
 
 }

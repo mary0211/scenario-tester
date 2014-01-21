@@ -12,7 +12,7 @@ public class Loop extends Functor {
 
 	@Override
 	public String run() {
-		int loop = Integer.parseInt(value(scene.getString(1)));
+		int loop = Integer.parseInt(evaluatedValue(scene.get(1)));
 		JSONArray body = scene.getJSONArray(2);
 		Worker w = new Worker(worker.getProjector(), worker.getWorkerId(), body);
 		for(int i=0;i<loop;i++) {

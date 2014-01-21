@@ -12,7 +12,7 @@ public class Wait extends Functor {
 
 	@Override
 	public String run() {
-		int delay = Integer.parseInt(value(scene.getString(1)));
+		int delay = Integer.parseInt(evaluatedValue(scene.get(1)));
 		try {
 			Thread.sleep(delay);
 		} catch (InterruptedException e) {

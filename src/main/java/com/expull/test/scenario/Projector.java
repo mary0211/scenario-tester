@@ -8,10 +8,15 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Reader;
+import java.io.Writer;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Vector;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
+
+import com.expull.test.scenario.functor.Functor;
 
 public class Projector {
 	private final JSONObject content;
@@ -28,6 +33,8 @@ public class Projector {
 	private int failCount = 0;
 	private int successCount = 0;
 	private int totalCount = 0;
+	private final Map<String, Writer> writermap = new HashMap<String, Writer>();
+	private final Map<String, Functor> threadingFunctors = new HashMap<String, Functor>();
 	
 	public Projector(String path) throws FileNotFoundException, IOException {
 		content = JSONObject.fromObject(readContentFromFile(path));
@@ -57,7 +64,6 @@ public class Projector {
 			titles+=", "+title.getString(0);
 		}
 		
-//		String rs="";
 		try {
 			BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter("result.csv"));
 			bufferedWriter.write(titles);
@@ -70,7 +76,7 @@ public class Projector {
 			}
 			
 			waitForWorkers();
-			bufferedWriter.write(reportLoop(i, threads));;
+//			bufferedWriter.write(reportLoop(i, threads));
 			threads = Math.min(threads + step, totalThreads);
 			
 			bufferedWriter.newLine();
@@ -78,9 +84,25 @@ public class Projector {
 		bufferedWriter.close();
 		} catch (IOException e) {
 		}
-//		System.out.println("result : "+rs);
-//		resulrtFileOut(rs);
 		execEpilogue();
+		closeAllWriters();
+		stopAllThreadingFunctors();
+	}
+
+	private void stopAllThreadingFunctors() {
+		for(Functor f : threadingFunctors.values()) {
+			f.stopThreading();
+		}
+	}
+
+	private void closeAllWriters() {
+		for(Writer w : writermap.values()) {
+			try {
+				w.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 	private void execEpilogue() {
@@ -98,7 +120,6 @@ public class Projector {
 	
 	private String reportLoop(int i, int threads) {
 		double avg = round(average(performances), 2);
-//		String report = "loop : "+i+", threads : "+threads+", success : "+threads+", failed : 0"+", avg : "+avg;
 		String report =i+", "+threads+", "+threads+", 0"+", "+avg;
 		
 		for(Vector<Long> e : eachPerformances) {
@@ -215,6 +236,10 @@ public class Projector {
 		int v = Integer.parseInt(variables.getString(key));
 		variables.put(key, (v+amount)+"");
 	}
+	
+	public synchronized void putValue(String key, String value) {
+		variables.put(key, value);
+	}
 
 	public synchronized void increaseTotalCount() {
 		totalCount++;
@@ -239,5 +264,17 @@ public class Projector {
 
 	public int getFailCount() {
 		return failCount;
+	}
+
+	public Writer getWriterFor(String fd) {
+		return writermap.get(fd);
+	}
+	
+	public void putWriter(String fd, Writer writer) {
+		writermap.put(fd, writer);
+	}
+
+	public void putThreadingFunctor(String key, Functor functor) {
+		threadingFunctors.put(key, functor);
 	}
 }
